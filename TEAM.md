@@ -5,7 +5,7 @@
 - Tên nhóm (`TenNhom`, không dấu, không khoảng trắng): NTD
 - Lớp: `L3A`
 - Repo của bàn: `K5-L3A-DAY10-NTD-PoCtoPilotGate1` (https://github.com/mynameduyjob/K5-L3A-DAY10-NTD-PoCtoPilotGate1)
-- Thẻ sự cố đã bốc (S1–S8): (điền ở phút 125)
+- Thẻ sự cố đã bốc (S1–S8): S7 (Email pháp chế: lộ số điện thoại người nhận quà)
 
 ## Thành viên
 
@@ -28,7 +28,7 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 | Vận hành và pháp lý | Phạm Thị Hồng Ngọc | 2.4 HAZOP vòng 1 + checklist 9 nhóm có PIC (B4, B5) · 2.10 cổng `operations`, `legal`, runbook 1–3, giờ cao điểm (B7.5, B7.6) · C3, C4 HAZOP thẻ, C10 risk register, C11 runbook 4–5 · lệnh 7 | `config/operating_gates.json` mục `operations`, `legal`; `submission/submission.json` |
 | Cả bàn | Đức · Trân · Ngọc | 2.5 pre-mortem bốn lăng kính (B6) · demo, phản biện | `templates/form-*.md` |
 
-### Ai làm gì (CP1–CP3, theo lịch sử commit)
+### Ai làm gì (CP1–CP4, theo lịch sử commit)
 
 Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi đúng người đã viết/chạy, kèm commit hoặc mã lần chạy.
 
@@ -50,6 +50,17 @@ Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi �
 | CP3 | Lệnh 5 chốt vòng 1, mốc prepared, `gate` | `lab10/guards_round1.py`, `config/operating_gates.round1.json`, `config/round1.lock`, B0 dòng 3 | Trân | Trân | hash `e8c93d4a`, `R-base-prepared-20261118-164140-b5bfcd` |
 | CP3 | Quyết định v1 (**Thu hẹp**) | Phiếu B B8 | Đức | Trân soạn theo report; **Đức cần xác nhận và ký** | commit chốt vòng 1 |
 | CP3 | Gộp các nhánh, đẩy `main` | `main` | Đức | Trân | commit chốt vòng 1 |
+| CP4 | Nhận thẻ S7 (repo thẻ, đối chiếu hash MANIFEST), ghi `Thẻ đã bốc: S7` | `incidents/`, Phiếu C dòng đầu, `TEAM.md` | Đức | Trân | `07f5971`, `8b247c8` |
+| CP4 | Câu 3.0 `grade --incident S7` trước khi sửa | Phiếu C C0 dòng 1, C1 | Trân | Trân | `R-S7-grade-20261118-165613-b5bfcd` |
+| CP4 | Câu 3.1 trace ≥ 2 kiểu lỗi, bảng soát lỗi | Phiếu C C2 | Trân | Trân | `S7-01@11`, `S7-20@11`, `S7-04@11`, `S7-05@11` |
+| CP4 | Câu 3.1 phần riêng thẻ S7 (C3.3 hiệu chỉnh lòng tin), HAZOP của thẻ | Phiếu C C3.3, C4 | Ngọc | Trân soạn nháp; **Ngọc cần duyệt** | commit vòng 2 |
+| CP4 | Câu 3.2, 3.3 specification, giả định môi trường | Phiếu C C5 | Trân | Trân | commit vòng 2 |
+| CP4 | Câu 3.4 fault tree trước khi sửa | Phiếu C C6 | Trân | Trân | `R-S7-before-20261118-165613-b5bfcd` |
+| CP4 | Câu 3.5 sửa: Cổng 3 ghi sự kiện `notice_fields_stripped`; bảng sửa | `lab10/guards.py`, Phiếu C C7 | Trân | Trân | `R-S7-after-20261118-165913-4cd37f` |
+| CP4 | Câu 3.6 ba chỉ số theo dõi mới | `lab10/monitors.py`, Phiếu C C8 | Trân | Trân | `R-S7-after-20261118-170032-5d6948`, grade `R-S7-grade-20261118-170103-5d6948` (`PASS-VISIBLE`) |
+| CP4 | Câu 3.7 fault tree sau khi sửa | Phiếu C C9 | Trân | Trân | `R-S7-after-20261118-170103-5d6948` |
+| CP4 | Câu 3.7 risk register, checklist, runbook 4–5 | Phiếu C C10, C11 | Ngọc | Trân soạn nháp; **Ngọc cần duyệt** | commit vòng 2 |
+| CP5 | Quyết định v2 + ba dòng bắt buộc | Phiếu C C12 | Đức | **Chưa làm** (chờ Đức) | — |
 
 ## Cá nhân
 
@@ -85,6 +96,7 @@ Kỹ sư cổng. Câu 2.1–2.2 (B0–B2), câu 2.6–2.8 (B7.1–B7.3), câu 3.
 - Viết 3 cổng vòng 1 trong `lab10/guards.py`: (1) `pre_guard` ghim chính sách theo ngày + `issue_refund` tính lại tiền từ tracking DB, chống ghi trùng, chặn fail-open và đổi người trả; (2) `file_carrier_fault` chỉ ghi khi có nguyên nhân lỗi hãng, đúng kiện, chưa chạm trần/ngày; (3) `notify_carrier` chỉ giữ `carrier_notice_fields`.
 - Câu 2.7, 2.8 (B7.2, B7.3): 2 ticket hiểm `--adhoc`, cả hai giữ tính chất.
 - Gộp phần của Đức và Ngọc, sửa các lỗi review (khoá PII, tên trường B4, câu 1.3), soạn nháp B6 và B8 cho bàn duyệt, chốt vòng 1 (lệnh 5), chạy mốc prepared.
+- Vòng 2 (thẻ S7): nhận thẻ, `grade` trước khi sửa, dò 4 ticket, tìm 2 nguyên nhân độc lập (`customer_note` chép chữ khách gõ; `recipient_contact` tự thêm khi `is_gift`); thêm sự kiện `notice_fields_stripped` ở Cổng 3 và 3 monitor; điền Phiếu C C0–C11 (C3.3, C4, C10, C11 là nháp cho Ngọc duyệt).
 - Dùng trợ lý AI (Claude) để đọc code `lab10/`, gợi ý cách viết cổng, soạn nháp phiếu và kiểm tra hash; mọi số trong phiếu lấy từ lần chạy thật.
 
 ### Bằng chứng
@@ -92,6 +104,7 @@ Kỹ sư cổng. Câu 2.1–2.2 (B0–B2), câu 2.6–2.8 (B7.1–B7.3), câu 3.
 - Commit: `4f7a0da`, `84ccfbe`, `36645aa`, `0699b71`, commit chốt vòng 1 trên `main`.
 - Lần chạy: `R-base-before-20261118-154100-bde05c` (base), `R-base-after-20261118-154125-84ee27` (cổng vòng 1), `R-base-after-20261118-155700-ff7de9` (sửa khoá PII), `R-base-prepared-20261118-164140-b5bfcd` (prepared).
 - Hash chốt vòng 1: `e8c93d4a`. Phiếu B: B0 dòng 1–5, B1, B2, B7.1–B7.3.
+- Vòng 2: `R-S7-grade-20261118-165613-b5bfcd` (trước khi sửa), `R-S7-grade-20261118-170103-5d6948` (`PASS-VISIBLE`), `R-base-after-20261118-170033-5d6948` (không regression). Phiếu C: C0–C11.
 
 ### Exit ticket
 

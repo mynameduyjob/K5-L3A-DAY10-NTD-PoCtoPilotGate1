@@ -98,6 +98,8 @@ def write_gate(ctx, action):
         payload = action.get("payload") or {}
         extra = sorted(set(payload) - allowed)
         if extra:
+            # Vòng 2 (S7): ghi lại trường bị bỏ để monitor đếm được trợ lý còn CỐ gửi gì cho hãng.
+            ctx.log("notice_fields_stripped", carrier_id=action.get("carrier_id"), fields=extra)
             return Verdict.modify("bỏ trường không được gửi cho hãng: " + ", ".join(extra),
                                   payload={k: v for k, v in payload.items() if k in allowed})
 

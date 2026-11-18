@@ -13,9 +13,9 @@ Họ tên đầy đủ và MSSV của **mọi** thành viên; thêm dòng nếu 
 
 | STT | Họ và tên | MSSV | Vai | Trưởng nhóm |
 | --: | --------- | ---- | --- | :---------: |
-|   1 |           |      |     |             |
-|   2 |           |      |     |             |
-|   3 |           |      |     |             |
+|   1 |      Phạm Duy Đức     | 2A202603611     |     |     X        |
+|   2 |    Phạm Thị Hồng NGọc       | 2A202603602     |     |             |
+|   3 |    Nguyễn Trần Tú Trân       |  2A202603603    |     |             |
 |   4 |           |      |     |             |
 
 Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, khớp bảng trên.

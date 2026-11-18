@@ -22,11 +22,8 @@
   },
   "legal": {
     "pii_fields_blocked_to_third_party": [
-      "name",
-      "phone",
-      "street",
-      "district",
-      "city"
+      "recipient_contact",
+      "customer_note"
     ],
     "carrier_fault_requires_recorded_cause": true
   }

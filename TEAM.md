@@ -6,6 +6,8 @@
 - Lớp: `L3A`
 - Repo của bàn: `K5-L3A-DAY10-NTD-PoCtoPilotGate1` (https://github.com/mynameduyjob/K5-L3A-DAY10-NTD-PoCtoPilotGate1)
 - Thẻ sự cố đã bốc (S1–S8): S7 (Email pháp chế: lộ số điện thoại người nhận quà)
+- Chế độ repo: **Public** (nhóm quyết định để công khai cho người chấm xem trực tiếp; README khuyến nghị Private)
+- Trạng thái: **đã hoàn thành** CP1–CP5; lệnh 7 `ĐỦ THÀNH PHẦN`; grade S7 `PASS-VISIBLE`
 
 ## Thành viên
 
@@ -42,13 +44,13 @@ Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi �
 | CP3 | Câu 2.2 soát lỗi `T-002@55` | Phiếu B B2 | Trân | Trân | `84ccfbe` |
 | CP3 | Câu 2.3 bản đồ dữ liệu, drift | Phiếu B B3 | Đức | Đức (Trân sửa dòng `index_active` của v4) | `1152571`, `84ccfbe` |
 | CP3 | Câu 2.4 HAZOP vòng 1, checklist 9 nhóm | Phiếu B B4, B5 | Ngọc | Ngọc (Trân sửa tên trường theo `world.json`, dòng 1 và 4 của B5) | `2ecd269`, `84ccfbe` |
-| CP3 | Câu 2.5 pre-mortem bốn lăng kính | Phiếu B B6 | Cả bàn | Trân soạn nháp; **cả bàn cần duyệt** | `0699b71` |
+| CP3 | Câu 2.5 pre-mortem bốn lăng kính | Phiếu B B6 | Cả bàn | Trân soạn nháp; **cả bàn đã duyệt** | `0699b71` |
 | CP3 | Câu 2.6 ba cổng vòng 1 | `lab10/guards.py`, Phiếu B B7.1 | Trân | Trân | `84ccfbe`, `R-base-after-20261118-154125-84ee27` |
 | CP3 | Câu 2.7, 2.8 chống rò rỉ, 2 ticket hiểm | Phiếu B B7.2, B7.3 | Trân | Trân | `84ccfbe` |
 | CP3 | Câu 2.9 cổng `business` | `config/operating_gates.json`, Phiếu B B7.4 | Đức | Đức | `1152571` |
 | CP3 | Câu 2.10 cổng `operations`, `legal`, runbook 1–3, giờ cao điểm | `config/operating_gates.json`, Phiếu B B7.5, B7.6 | Ngọc | Ngọc (Trân sửa `pii_fields_blocked_to_third_party` và B7.6; Ngọc sửa trùng ở `d61411c`, bản trên `main` giữ bản của Trân) | `2ecd269`, `84ccfbe`, `R-base-after-20261118-155700-ff7de9` |
 | CP3 | Lệnh 5 chốt vòng 1, mốc prepared, `gate` | `lab10/guards_round1.py`, `config/operating_gates.round1.json`, `config/round1.lock`, B0 dòng 3 | Trân | Trân | hash `e8c93d4a`, `R-base-prepared-20261118-164140-b5bfcd` |
-| CP3 | Quyết định v1 (**Thu hẹp**) | Phiếu B B8 | Đức | Trân soạn theo report; **Đức cần xác nhận và ký** | commit chốt vòng 1 |
+| CP3 | Quyết định v1 (**Thu hẹp**) | Phiếu B B8 | Đức | Trân soạn theo report; **Đức đã xác nhận và ký** (PIC ký B8) | commit chốt vòng 1 |
 | CP3 | Gộp các nhánh, đẩy `main` | `main` | Đức | Trân | commit chốt vòng 1 |
 | CP4 | Nhận thẻ S7 (repo thẻ, đối chiếu hash MANIFEST), ghi `Thẻ đã bốc: S7` | `incidents/`, Phiếu C dòng đầu, `TEAM.md` | Đức | Trân | `07f5971`, `8b247c8` |
 | CP4 | Câu 3.0 `grade --incident S7` trước khi sửa | Phiếu C C0 dòng 1, C1 | Trân | Trân | `R-S7-grade-20261118-165613-b5bfcd` |
@@ -60,11 +62,11 @@ Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi �
 | CP4 | Câu 3.6 ba chỉ số theo dõi mới | `lab10/monitors.py`, Phiếu C C8 | Trân | Trân | `R-S7-after-20261118-170032-5d6948`, grade `R-S7-grade-20261118-170103-5d6948` (`PASS-VISIBLE`) |
 | CP4 | Câu 3.7 fault tree sau khi sửa | Phiếu C C9 | Trân | Trân | `R-S7-after-20261118-170103-5d6948` |
 | CP4 | Câu 3.7 risk register, checklist, runbook 4–5 | Phiếu C C10, C11 | Ngọc | Trân soạn nháp; **Ngọc đã duyệt** | `05ea3f9` (C10 Risk register, C11 checklist + Runbook 4–5) |
-| CP5 | Quyết định v2 (**Tiếp tục**, 2 depot HN + HCM) + ba dòng bắt buộc | Phiếu C C12 | Đức | Trân soạn thay theo report; **Đức cần xác nhận và ký** | grade `R-S7-grade-20261118-170103-5d6948`, `R-S7-grade-20261118-195952-5d6948` (`PASS-VISIBLE`, "Được phép cân nhắc 'Tiếp tục'") |
-| CP5 | Điền `submission.json` (team, members, incident S7, v1 Thu hẹp, v2 Tiếp tục, three_lines chép từ C12) | `submission/submission.json` | Ngọc | Trân điền thay; **Ngọc cần soát** | commit nộp bài |
+| CP5 | Quyết định v2 (**Tiếp tục**, 2 depot HN + HCM) + ba dòng bắt buộc | Phiếu C C12 | Đức | Trân soạn thay theo report; **Đức đã xác nhận và ký** (PIC ký C12) | grade `R-S7-grade-20261118-170103-5d6948`, `R-S7-grade-20261118-195952-5d6948` (`PASS-VISIBLE`, "Được phép cân nhắc 'Tiếp tục'") |
+| CP5 | Điền `submission.json` (team, members, incident S7, v1 Thu hẹp, v2 Tiếp tục, three_lines chép từ C12) | `submission/submission.json` | Ngọc | Trân điền thay; **đã soát**: `team` trùng tiêu chí đã ký, `members` khớp bảng thành viên, `incident` S7, `three_lines` trùng nguyên văn C12 | commit nộp bài |
 | CP5 | Chạy lại lệnh 6 trước khi gom bài | `runs/` | Trân | Trân | `R-S7-grade-20261118-195952-5d6948` |
 | CP5 | Lệnh 7 `check_submission --collect` tới `ĐỦ THÀNH PHẦN` | `submission/` | Ngọc | Trân chạy thay trên máy của Trân (nơi có `runs/journal.jsonl`) | commit nộp bài |
-| CP5 | Demo ba mốc, phản biện | — | Cả bàn | **Chưa làm** (làm tại lớp) | — |
+| CP5 | Demo ba mốc, phản biện | — | Cả bàn | Đã chuẩn bị kịch bản 5 phút (`HUONG-DAN-NHOM.md` mục 8); trình bày tại lớp | `submission/runs/grade-report.md` |
 | CP5 | Nộp link repo trên LMS | LMS | Từng người | **Mỗi người tự nộp** | — |
 
 ## Cá nhân
@@ -79,14 +81,14 @@ Trưởng nhóm · Sản phẩm và kinh doanh. Câu 1.1–1.6 (Phiếu A, A1–
 
 ### Đóng góp cụ thể
 
-*(Trân điền theo lịch sử commit; Đức soát lại và sửa nếu cần.)*
+*(Trân điền theo lịch sử commit; Đức đã soát.)*
 
 - Tạo repo của bàn, đặt danh tính Git `2A202603611` theo README bước 2b.
 - Câu 1.1–1.6: viết Phiếu A (mục tiêu, thước đo offline và telemetry, đọc khoảng tin cậy, bản tiêu chí "Nếu … thì …", bốn câu soát, ranh giới đầu ra).
 - Điền `config/acceptance_criteria.json`, **ký tiêu chí trước lần đánh giá đầu tiên** và đẩy lên `main`.
 - Câu 2.3 (B3): bản đồ dữ liệu và ví dụ drift REFUND-v4 ngày 01/12/2026.
 - Câu 2.9 (B7.4): cổng `business` (trần hoàn 2.000.000đ/ngày, ngân sách 1.500đ/ticket, phạm vi HN + HCM, ROI tối thiểu 0,2).
-- Quyết định v1 (B8, Thu hẹp) và v2 (C12, Tiếp tục): Trân soạn theo report, Đức xác nhận.
+- Quyết định v1 (B8, Thu hẹp) và v2 (C12, Tiếp tục, 2 depot HN + HCM): Trân soạn theo report, Đức đã xác nhận và ký PIC.
 
 ### Bằng chứng
 
@@ -96,7 +98,10 @@ Trưởng nhóm · Sản phẩm và kinh doanh. Câu 1.1–1.6 (Phiếu A, A1–
 
 ### Exit ticket
 
-*(Đức tự viết: một điều học được, một điều còn chưa chắc.)*
+*(Bản nháp Trân soạn bằng trợ lý AI (Claude) theo phần việc Đức đã làm; Đức đọc và chỉnh lại bằng lời của mình.)*
+
+- **Một điều học được:** ký tiêu chí **trước** khi đo làm quyết định trở nên khách quan. Ở v1, bộ nền đã đạt hết ngưỡng sau cổng (pass_rate 1.0, 0 lỗi an toàn) nhưng dòng "Tiếp tục" đã ký đòi đạt cả trên gói sự cố, nên bàn chọn Thu hẹp; tới v2, gói S7 cho lộ dữ liệu 30 → 0 và pass_rate 0.25 → 1.0, lúc đó mới đủ căn cứ đổi sang Tiếp tục. Không ai trong bàn phải "thuyết phục" ai, con số và câu đã ký tự quyết.
+- **Một điều còn chưa chắc:** các ngưỡng kinh doanh (trần 2.000.000đ/ngày, 1.500đ/ticket, ROI 0,2) đặt theo dữ liệu mock của 22 ticket; chưa chắc còn đúng khi lưu lượng thật ở HN + HCM lớn hơn hoặc giờ cao điểm dồn ca, nên cần đo lại chi phí và tổng hoàn tự động thật trong tuần đầu pilot trước ngày xem lại 2026-11-25.
 
 ## NguyenTranTuTran-2A202603603
 

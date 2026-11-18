@@ -691,9 +691,11 @@ B8 phải có: mã base + mã prepared, 3 dòng bằng chứng có số, dòng `
 
 ## 7. Việc còn treo
 
-- [ ] Đặt danh tính Git theo Bước 2b trước commit ký.
-- [ ] Gộp nhánh `NguyenTranTuTran-2A202603603` vào `main` trước khi ký.
-- [ ] Repo để Private và đã mời tài khoản team chấm quyền Read.
+- [x] Đặt danh tính Git theo Bước 2b trước commit ký.
+- [x] Gộp nhánh `NguyenTranTuTran-2A202603603` vào `main` trước khi ký.
+- [x] Repo để **Public** theo quyết định của nhóm (README khuyến nghị Private; người chấm xem trực tiếp không cần mời).
+- [x] Đức xác nhận B8 (Thu hẹp) và C12 (Tiếp tục); `submission.json` đã soát; lệnh 7 `ĐỦ THÀNH PHẦN`.
+- [ ] Demo tại lớp (mục 8) · mỗi người tự nộp link repo trên LMS.
 
 ---
 

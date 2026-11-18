@@ -7,18 +7,27 @@
     "roi_min": 0.2
   },
   "operations": {
-    "pic": "",
-    "approver_id": "",
+    "pic": "NV-TUNG",
+    "approver_id": "NV-HANH",
     "reviewers_on_shift": 1,
-    "review_capacity_per_hour": null,
-    "max_queue_wait_minutes": null,
-    "stop_conditions": [],
-    "alert_channel": "",
+    "review_capacity_per_hour": 6,
+    "max_queue_wait_minutes": 60,
+    "stop_conditions": [
+      "Khi có 1 lỗi ghi oan cho hãng vận chuyển hoặc tiền hoàn sai > 0đ thì tắt file_carrier_fault hoặc issue_refund trong config/switches.json",
+      "Khi hàng chờ người duyệt > 6 ca/giờ hoặc thời gian chờ > 60 phút mà chưa bổ sung được người trực thì thu hẹp pilot_scope hoặc dừng trợ lý"
+    ],
+    "alert_channel": "#logix-pilot-ops",
     "decision_note": false,
     "review_sampling_pct": 0
   },
   "legal": {
-    "pii_fields_blocked_to_third_party": [],
-    "carrier_fault_requires_recorded_cause": false
+    "pii_fields_blocked_to_third_party": [
+      "name",
+      "phone",
+      "street",
+      "district",
+      "city"
+    ],
+    "carrier_fault_requires_recorded_cause": true
   }
 }

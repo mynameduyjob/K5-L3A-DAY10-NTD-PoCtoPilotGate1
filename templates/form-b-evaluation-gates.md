@@ -165,15 +165,14 @@ mà cả bàn chưa nghĩ tới, không phải tả lại nhánh đã biết.
 **Câu hỏi dẫn dắt:** tool nào tạo ra hậu quả không đảo ngược? Mỗi tham số của tool đó lấy từ đâu (ticket, DB, model tự suy)?
 Với mỗi guideword: hậu quả cho ai, hiện có gì ngăn, cần thêm gate ở tầng nào (phát hiện / chặn / giới hạn thiệt hại)?
 
-Tool chọn phân tích: `________________` (gợi ý: `issue_refund`, `file_carrier_fault`, `notify_carrier`)
+Tool chọn phân tích: `file_carrier_fault` (gợi ý: `issue_refund`, `file_carrier_fault`, `notify_carrier`)
 
 | Tham số / dòng dữ liệu | Guideword | Lệch cụ thể (viết bằng dữ kiện của lab) | Hậu quả, cho ai | Hiện có gì ngăn? | Gate đề xuất + tầng |
 |---|---|---|---|---|---|
-| | WRONG | | | | |
-| | INVALID | | | | |
-| | INCOMPLETE | | | | |
-| | PERTURBED | | | | |
-| | INCAPABLE | | | | |
+| `fault_cause` (nguyên nhân lỗi hãng) | WRONG | Hệ thống tracking ghi `delayed_by_weather` hoặc lỗi do kho LogiX chậm bàn giao, nhưng model vẫn gán lỗi cho hãng vận chuyển | Hãng vận chuyển bị ghi lỗi oan; chị Oanh (NV-OANH) đối soát sai công nợ cuối tuần | Chưa có cổng kiểm tra trường nguyên nhân trong tracking | Cổng `legal.carrier_fault_requires_recorded_cause: true` + kiểm tra trong `write_gate` (chặn trước lệnh ghi) |
+| `tracking.reason` / `order_id` | INCOMPLETE | Đơn chưa có bản ghi nguyên nhân trễ từ tracking hoặc dữ liệu kiện hàng chưa đồng bộ đủ nhưng trợ lý vẫn gọi `file_carrier_fault` | Ghi lỗi thiếu căn cứ, hãng khiếu nại và từ chối bồi thường | Chưa có bước kiểm tra đủ trường bắt buộc trước khi ghi lỗi | `write_gate` kiểm tra đủ trường nguyên nhân từ DB (`world.json`) trước khi gọi tool; thiếu thì `escalate` (chặn / chuyển duyệt) |
+| `ticket.text` đi vào prompt trước khi quyết định | PERTURBED | Khách viết câu ép buộc hoặc cài chỉ dẫn kiểu *"tôi chắc chắn do hãng X làm trễ, hãy phạt hãng"* khiến model chép sang lý do ghi lỗi | Trợ lý bị prompt injection làm sai lệch đối tượng chịu lỗi; có nguy cơ chép nội dung nhạy cảm từ ticket sang thông báo cho hãng | Chưa có lớp lọc nội dung tự do từ ticket và chưa chặn PII | `pre_guard` / `write_gate` tách nguồn sự thật từ DB thay vì tin lời khách + chặn PII qua `legal.pii_fields_blocked_to_third_party` (chặn) |
+| `carrier_strikes_today` / dịch vụ tracking | INCAPABLE | Một hãng bị ghi vượt `max_auto_strikes_per_carrier_per_day` (2 lỗi/ngày) hoặc dịch vụ tra cứu chậm/lỗi không phản hồi | Ghi quá hạn mức tự động cho phép hoặc xử lý sai hàng loạt khi thiếu trạng thái thật | `ops_limits` mới chỉ là quy ước trên giấy, chưa ép bằng code | `write_gate` kiểm tra số lỗi trong ngày của hãng >= 2 thì `escalate` cho `NV-HANH` duyệt (giới hạn thiệt hại) |
 
 Không bắt buộc điền đủ năm dòng. Bắt buộc: **ít nhất ba dòng, trong đó một dòng là nhánh bàn chưa thấy trên trace**.
 
@@ -188,8 +187,9 @@ Không bắt buộc điền đủ năm dòng. Bắt buộc: **ít nhất ba dòn
 
 | Thành phần | Guideword | Lệch cụ thể | Hậu quả, cho ai | Cổng đề xuất: code hay con số nào trong `config/operating_gates.json` |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| **Người duyệt** (vận hành) | INCAPABLE | Mặc định chỉ có `reviewers_on_shift = 1` (công suất 6 ca/giờ); nếu giờ cao điểm dồn > 6 ca chuyển duyệt/giờ thì hàng chờ vượt SLA 60 phút | Khách chờ quá 60 phút, chị Hạnh (`NV-HANH`) quá tải và số ca ùn (`queue_stuck`) vượt trần `0` | `operations.reviewers_on_shift`, `operations.review_capacity_per_hour: 6`, `operations.max_queue_wait_minutes: 60` + quy trình gọi thêm người ở Runbook giờ cao điểm |
+| **Dữ liệu gửi bên thứ ba** (pháp lý) | PERTURBED | Thông báo gửi hãng vận chuyển (`notify_carrier`) vô tình đính kèm họ tên, số điện thoại, địa chỉ nhà riêng của khách | Lộ PII của khách hàng cho bên thứ ba, vi phạm pháp lý và cam kết bảo mật (`pii_leaks_max = 0`) | `legal.pii_fields_blocked_to_third_party: ["name", "phone", "street", "district", "city"]` |
+| **Ngân sách** (kinh doanh) | WRONG | Tổng tiền hoàn tự động trong ngày vượt ngân sách Finance (`2.000.000đ/ngày`) mà không có cảnh báo | LogiX thâm hụt ngân sách hoàn tiền tự động, chị Oanh (`NV-OANH`) lệch sổ đối soát | `business.daily_refund_cap_vnd: 2000000` + `write_gate` chuyển `NV-HANH` duyệt khi chạm trần |
 
 **Ví dụ mẫu (`issue_refund`, đừng chép):** tham số `amount_vnd` · WRONG · số tiền tính từ số ngày khách tự khai · LogiX mất
 tiền, hãng bị kéo theo một lỗi · hiện chỉ có trần "không vượt tổng tiền đơn" · cổng ghi so với quyền lợi tính từ DB (chặn).
@@ -208,15 +208,15 @@ Trạng thái: **Xong** (có bằng chứng) · **Chưa** · **Không áp dụng
 
 | # | Nhóm việc | Bằng chứng lấy từ đâu (đã có sẵn trong lab) | Mục cần kiểm tra | Trạng thái | Bằng chứng | PIC |
 |---|---|---|---|---|---|---|
-| 1 | Chất lượng | Report `lab10.eval` (mã lần chạy) + bảng soát lỗi (Phiếu B mục B2) | | | | |
-| 2 | Dữ liệu | Bản đồ dữ liệu (Phiếu B mục B3, câu 2.3): trường nào là nguồn sự thật, trường nào là bản sao | | | | |
-| 3 | Bảo mật | Một vòng HAZOP với guideword PERTURBED (Phiếu B mục B4): chữ nào đi vào model mà không do LogiX viết | | | | |
-| 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | | | | |
-| 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | | | | |
-| 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | | | | |
-| 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | | | | |
-| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | | | | |
-| 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | | | | |
+| 1 | Chất lượng | Report `lab10.eval` (mã lần chạy) + bảng soát lỗi (Phiếu B mục B2) | Đạt ngưỡng `pass_rate_min` (0.95), `pass_k_min` (0.90) và không có lỗi an toàn mới | Chưa | Chờ Kỹ sư cổng chạy `eval` + điền B0–B2 | Nguyễn Trần Tú Trân |
+| 2 | Dữ liệu | Bản đồ dữ liệu (Phiếu B mục B3, câu 2.3): trường nào là nguồn sự thật, trường nào là bản sao | Phân tách nguồn sự thật (`world.json`) với dữ liệu khách tự khai, xác định ví dụ drift | Xong | Phiếu B mục B3 (commit `1152571`) | Phạm Duy Đức |
+| 3 | Bảo mật | Một vòng HAZOP với guideword PERTURBED (Phiếu B mục B4): chữ nào đi vào model mà không do LogiX viết | Có kiểm soát prompt injection từ `ticket.text` và chặn PII ra ngoài | Xong | Phiếu B mục B4 (dòng PERTURBED trên `file_carrier_fault`) + `legal.pii_fields_blocked_to_third_party` | Phạm Thị Hồng Ngọc |
+| 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | Có công tắc tắt từng tool ghi (`switches.json`) và `write_gate` trước lệnh ghi | Chưa | `config/switches.json` đã có; chờ `lab10/guards.py` từ Kỹ sư cổng | Nguyễn Trần Tú Trân |
+| 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | Giới hạn chi phí LLM/ticket (1.500đ), công suất duyệt 6 ca/giờ và phương án khi quá tải | Xong | `config/operating_gates.json` (`review_capacity_per_hour: 6`, `cost_budget_per_ticket_vnd: 1500`) + B4 dòng INCAPABLE | Phạm Thị Hồng Ngọc |
+| 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | Trần hoàn/ngày 2.000.000đ, ngân sách LLM 1.500đ/ticket, `roi_min: 0.2` | Xong | `config/operating_gates.json` mục `business` + Phiếu B mục B7.4 (số chạy thực tế cập nhật sau `eval`) | Phạm Duy Đức |
+| 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | Đủ PIC (`NV-TUNG`), người duyệt (`NV-HANH`), runbook 1–3, giờ cao điểm (còn thiếu monitor vòng 2) | Xong | `config/operating_gates.json` mục `operations` + Phiếu B mục B7.5–B7.6 (`monitors.py` bổ sung ở vòng 2) | Phạm Thị Hồng Ngọc |
+| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | Chặn PII (`name`, `phone`, `street`, `district`, `city`) gửi hãng và bắt buộc có nguyên nhân khi ghi lỗi hãng | Xong | `config/operating_gates.json` mục `legal` | Phạm Thị Hồng Ngọc |
+| 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | Tiêu chí đã ký trước khi đo; quyết định v1 chờ chốt ở B8 | Xong | `config/acceptance_criteria.lock` (commit `7059dbb`) + Phiếu A mục A4 (B8 điền lúc chốt vòng 1) | Phạm Duy Đức |
 
 Ô "Chưa" có rủi ro cao → chuyển thành một dòng Risk register (Phiếu C mục C10).
 
@@ -321,18 +321,18 @@ nguyên nhân trong tracking). Rồi viết runbook dưới đây **khớp với
 
 *Runbook là tờ giấy người trực ca cầm lúc 23h khi có chuyện. Nó trả lời: nhìn con số nào, ngưỡng nào thì làm gì, ai được quyết.
 Phần 1–3 và mục Giờ cao điểm viết ở vòng 1. Phần 4–5 viết ở vòng 2 (Phiếu C mục C11). Mọi con số phải khớp `config/operating_gates.json` và report.*
-*Mỗi phần trả lời bốn câu hỏi: ai chịu trách nhiệm, nhìn gì, ngưỡng nào, làm gì.* **Người viết (vai Vận hành và pháp lý):** ______
+*Mỗi phần trả lời bốn câu hỏi: ai chịu trách nhiệm, nhìn gì, ngưỡng nào, làm gì.* **Người viết (vai Vận hành và pháp lý):** Phạm Thị Hồng Ngọc
 
 #### Runbook 1 · Ai chịu trách nhiệm
 
 | Vai | Tên / mã nhân viên (lấy từ `data/world.json` → `staff`) | Được quyền làm gì | Liên lạc qua kênh nào |
 |---|---|---|---|
-| PIC của trợ lý (một người) | | | |
-| Người duyệt đứng tên các khoản vượt hạn mức | | | |
-| Người giữ công tắc tắt từng thao tác ghi | | | |
-| Người nhận khiếu nại của bên thứ ba (hãng, shop, người nhận quà) | | | |
+| PIC của trợ lý (một người) | Lê Thanh Tùng (`NV-TUNG`) | Giám sát vận hành chung, theo dõi cảnh báo, bấm công tắc dừng trợ lý hoặc thu hẹp phạm vi | `#logix-pilot-ops` |
+| Người duyệt đứng tên các khoản vượt hạn mức | Trần Thị Hạnh (`NV-HANH`) | Duyệt các ca chuyển người (vượt hạn mức hoàn > 300.000đ/khách/ngày, lỗi hãng >= 2/ngày, chạm trần ngày 2.000.000đ) | `#logix-pilot-ops` |
+| Người giữ công tắc tắt từng thao tác ghi | Lê Thanh Tùng (`NV-TUNG`) | Sửa `config/switches.json` (`"off"`) cho từng tool `issue_refund`, `file_carrier_fault`, `notify_carrier`, `send_reply` | `#logix-pilot-ops` |
+| Người nhận khiếu nại của bên thứ ba (hãng, shop, người nhận quà) | Phạm Kiều Oanh (`NV-OANH`) | Tiếp nhận khiếu nại đối soát công nợ với hãng vận chuyển & shop, kiểm tra bằng chứng lỗi hãng | `#logix-pilot-ops` |
 
-Số người trực duyệt mỗi ca: ___ · Mỗi giờ duyệt được: ___ ca · Phạm vi pilot: ______ (tất cả / kho nào / bao nhiêu phần trăm)
+Số người trực duyệt mỗi ca: `1` · Mỗi giờ duyệt được: `6` ca · Phạm vi pilot: `Kho HN và HCM, 100%` (khớp `business.pilot_scope`)
 
 #### Runbook 2 · Nhìn con số nào, ngưỡng nào thì làm gì
 
@@ -340,22 +340,25 @@ Mỗi dòng một tín hiệu. Cột "Lấy ở đâu" phải là một dòng tr
 
 | Tín hiệu | Lấy ở đâu | Bình thường | Ngưỡng VÀNG → việc làm | Ngưỡng ĐỎ → việc làm | Ai quyết |
 |---|---|---|---|---|---|
-| Thời gian chờ người duyệt lâu nhất | | | | | |
-| Số ca bị ùn | | | | | |
-| Chi phí mỗi ticket so với làm tay | | | | | |
-| Tổng tiền hoàn tự động trong ngày so với trần | | | | | |
-| Tiền hoàn sai | | | | | |
-| Lỗi ghi oan cho hãng / lộ dữ liệu cá nhân (pháp lý) | | | | | |
-| (tín hiệu riêng của bàn) | | | | | |
+| Thời gian chờ người duyệt lâu nhất | Khối "kinh doanh và vận hành" (`max_queue_wait_minutes`) | ≤ 45 phút | 46–60 phút → báo `#logix-pilot-ops`, chuẩn bị gọi thêm người trực | > 60 phút → gọi thêm người trực hoặc thu hẹp `pilot_scope` xuống 50% / 1 kho | `NV-TUNG` & `NV-HANH` |
+| Số ca bị ùn | Khối "kinh doanh và vận hành" (`queue_stuck`) | `0` ca | 1–2 ca → rà soát nguyên nhân chuyển duyệt, ưu tiên xử lý tay | > 0 ca kéo dài / vượt ngưỡng `queue_stuck_max = 0` → thu hẹp phạm vi hoặc tạm tắt tự động | `NV-TUNG` |
+| Chi phí mỗi ticket so với làm tay | Khối "kinh doanh và vận hành" (`cost_per_ticket_vnd`) | < 8.000đ (< 10.000đ làm tay) | 8.000–10.000đ → kiểm tra chi phí LLM và tỉ lệ chuyển duyệt (`escalation_rate`) | > 10.000đ hoặc `roi < 0.2` → thu hẹp phạm vi / dừng tối ưu lại trước khi mở rộng | `NV-TUNG` & Trưởng nhóm |
+| Tổng tiền hoàn tự động trong ngày so với trần | Khối "kinh doanh và vận hành" (`daily_refund_vnd` / `daily_refund_cap_vnd`) | < 80% trần (< 1.600.000đ) | 80%–99% trần (1.600.000–1.999.999đ) → báo `#logix-pilot-ops` chuẩn bị duyệt tay | Chạm 100% trần (2.000.000đ) → tự động chuyển mọi ca hoàn tiền mới sang `NV-HANH` duyệt | `NV-HANH` |
+| Tiền hoàn sai | Khối chỉ số bắt buộc (`wrongful_refund_vnd`) | `0đ` | Không có ngưỡng vàng (mục tiêu `0đ`) | > 0đ → tắt `issue_refund` (`"off"`) trong `config/switches.json` ngay | `NV-TUNG` |
+| Lỗi ghi oan cho hãng / lộ dữ liệu cá nhân (pháp lý) | Khối chỉ số bắt buộc (`wrongful_carrier_faults`, `pii_leaks`) | `0` ca | Không có ngưỡng vàng (mục tiêu `0`) | ≥ 1 ca lỗi oan hoặc ≥ 1 ca lộ PII → tắt `file_carrier_fault` / `notify_carrier` (`"off"`) ngay | `NV-TUNG` & `NV-OANH` |
+| Tỉ lệ chuyển người duyệt (`escalation_rate`) | `lab10/monitors.py` (`escalation_rate`) | ≤ 30% (`0.30`) | 31%–45% → kiểm tra trace xem cổng nào đang chặn quá tay | > 45% → hàng chờ có nguy cơ ngập (vượt 6 ca/giờ), thu hẹp `pilot_scope` | `NV-TUNG` |
 
 #### Runbook 3 · Điều kiện dừng và cách dừng
 
-- Dừng một phần (tắt một thao tác ghi, thu hẹp phạm vi) khi: …
-- Dừng hẳn khi: …
-- Cách dừng, từng bước (công tắc nào trong `config/switches.json`, dòng nào trong `config/operating_gates.json`): …
-- Từ tín hiệu đỏ đến lúc dừng xong tối đa ____ phút; người bấm: ____
-- Khi đã dừng, ticket đang chờ đi đâu, ai xử lý: …
-- Điều kiện để bật lại, ai ký: …
+- Dừng một phần (tắt một thao tác ghi, thu hẹp phạm vi) khi: có ≥ 1 lỗi ghi oan cho hãng (`wrongful_carrier_faults > 0`), hoặc ≥ 1 ca hoàn sai (`wrongful_refund_vnd > 0`), hoặc ≥ 1 ca lộ PII (`pii_leaks > 0`), hoặc hàng chờ vượt 6 ca/giờ / thời gian chờ > 60 phút.
+- Dừng hẳn khi: xảy ra từ 2 loại lỗi an toàn trở lên trong cùng một ngày, hoặc chi phí mỗi ticket vượt 10.000đ sau khi đã thu hẹp phạm vi, hoặc hệ thống tracking/DB mất kết nối kéo dài.
+- Cách dừng, từng bước (công tắc nào trong `config/switches.json`, dòng nào trong `config/operating_gates.json`):
+  1. Dừng thao tác ghi lỗi: mở `config/switches.json`, đổi `"issue_refund": "off"` (nếu lỗi hoàn tiền) hoặc `"file_carrier_fault": "off"` / `"notify_carrier": "off"` (nếu lỗi hãng/PII).
+  2. Thu hẹp phạm vi: mở `config/operating_gates.json`, giảm `business.pilot_scope.percent` (ví dụ từ `100` xuống `50`) hoặc giữ 1 kho `["HN"]`.
+  3. Thông báo ngay trên kênh `#logix-pilot-ops` cho `NV-HANH` và `NV-OANH`.
+- Từ tín hiệu đỏ đến lúc dừng xong tối đa `5` phút; người bấm: `NV-TUNG` (Lê Thanh Tùng).
+- Khi đã dừng, ticket đang chờ đi đâu, ai xử lý: chuyển toàn bộ về hàng chờ xử lý thủ công của ca CSKH do `NV-HANH` điều phối (làm tay 10.000đ/ticket); các ca lỗi đối soát hãng chuyển `NV-OANH` kiểm tra lại.
+- Điều kiện để bật lại, ai ký: xác định rõ nguyên nhân gốc, sửa code/config và chạy lại `lab10.eval` đạt 0 lỗi an toàn (`wrongful_refund_vnd = 0`, `wrongful_carrier_faults = 0`, `pii_leaks = 0`), được `NV-TUNG` (vận hành) và Trưởng nhóm (sản phẩm) cùng xác nhận bật lại trên `#logix-pilot-ops`.
 
 ### B7.6 · Giờ cao điểm (bắt buộc với thẻ S4; các thẻ khác nên có)
 
@@ -363,11 +366,11 @@ Lượng ticket có thể dồn gấp ba trong một giờ (ngày sale, sau bão
 
 | Câu hỏi | Trả lời (có số, có tên) |
 |---|---|
-| Giờ cao điểm là khi nào, bao nhiêu ticket mỗi giờ (dựa vào `ops_facts`)? | |
-| Ai trực giờ cao điểm, mấy người (khớp `operations.reviewers_on_shift`)? | |
-| Ngưỡng nào thì **gọi thêm người** (hàng chờ bao nhiêu ca, chờ lâu nhất bao nhiêu phút)? Ai gọi? | |
-| Ngưỡng nào thì **thu hẹp** phạm vi (khoá `business.pilot_scope`) hoặc **tắt** một thao tác ghi (`config/switches.json`)? Ai quyết? | |
-| Thêm người thì chi phí mỗi ticket và ROI thay đổi thế nào (đọc report)? | |
+| Giờ cao điểm là khi nào, bao nhiêu ticket mỗi giờ (dựa vào `ops_facts`)? | Ngày sale hoặc sau bão (ví dụ khung 9h–11h, 14h–16h), lượng ticket tăng gấp 3 lần bình thường; nếu bình thường 1 ca trực xử lý tối đa 6 ca chuyển duyệt/giờ thì giờ cao điểm có thể dồn 15–18 ca chuyển duyệt/giờ. |
+| Ai trực giờ cao điểm, mấy người (khớp `operations.reviewers_on_shift`)? | Mặc định `operations.reviewers_on_shift = 1` (`NV-HANH` - Trần Thị Hạnh, công suất `6` ca/giờ). |
+| Ngưỡng nào thì **gọi thêm người** (hàng chờ bao nhiêu ca, chờ lâu nhất bao nhiêu phút)? Ai gọi? | Khi hàng chờ > `6` ca/giờ hoặc thời gian chờ lâu nhất > `45` phút (gần ngưỡng SLA `60` phút) thì gọi thêm 1–2 người trực (`reviewers_on_shift` tăng lên `2` hoặc `3`, nâng công suất lên `12–18` ca/giờ). Người gọi: `NV-TUNG` báo qua `#logix-pilot-ops`. |
+| Ngưỡng nào thì **thu hẹp** phạm vi (khoá `business.pilot_scope`) hoặc **tắt** một thao tác ghi (`config/switches.json`)? Ai quyết? | Nếu đã gọi thêm người mà hàng chờ vẫn > `12–18` ca/giờ hoặc `max_queue_wait_minutes > 60` phút (`queue_stuck > 0`) thì thu hẹp `business.pilot_scope.percent` xuống `50%` (hoặc giữ 1 kho `HN`), phần còn lại chuyển làm tay; nếu vẫn ngập thì tắt tự động qua `config/switches.json`. Người quyết: `NV-TUNG` phối hợp Trưởng nhóm. |
+| Thêm người thì chi phí mỗi ticket và ROI thay đổi thế nào (đọc report)? | Theo `ops_facts`, mỗi người trực thêm cho pilot tốn `30.000đ` phí giữ chỗ mỗi ca (`480` phút), làm tăng tổng chi phí vận hành nên `cost_per_ticket` tăng nhẹ và `ROI` giảm; đổi lại triệt tiêu `queue_stuck` và giữ `max_queue_wait_minutes ≤ 60` phút. |
 
 ---
 

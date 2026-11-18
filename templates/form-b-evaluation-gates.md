@@ -31,7 +31,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-base-before-20261118-154100-bde05c` | base · base | (baseline, chưa có cổng) | 0.9909 [0.9727; 1.0] | 0.9545 | 20.000 · 1 · 0 | 0.2273 | Đạt pass_rate/pass_k nhưng trượt 2 ngưỡng an toàn vì một ca `T-002@55` hoàn sai và ghi lỗi oan cho VNX. |
 | 2 | `R-base-after-20261118-154125-84ee27` | base · after | Thêm 3 cổng vòng 1 trong `guards.py` (config cổng vẫn để mặc định) | 1.0 [1.0; 1.0] | 1.0 | 0 · 0 · 0 | 0.2273 | Hết ca hỏng, không có ca mới hỏng, tỉ lệ chuyển người và chi phí giữ nguyên (4.202đ, ROI 1.38). |
-| 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
+| 3 | `R-base-prepared-20261118-164140-b5bfcd` | base · prepared | (cổng vòng 1 đã chốt, hash `e8c93d4a`; không đổi gì so với dòng 5) | 1.0 [1.0; 1.0] | 1.0 | 0 · 0 · 0 | 0.2308 | Bản chốt vòng 1 đạt cả 9 ngưỡng đã ký trên bộ nền; độ phủ 0,59 (HN + HCM), chi phí 5.165đ, ROI 0,94, không vượt trần. |
 | 4 | `R-base-after-20261118-154707-c3e4ac` | base · after | Ghép config: `business` (Đức, pilot_scope HN+HCM, trần 2.000.000đ) + `operations`/`legal` (Ngọc) | 1.0 [1.0; 1.0] | 1.0 | 0 · 0 · 0 | 0.2308 | Vẫn sạch, nhưng độ phủ còn 0.59 (13/22 ticket/ngày), chi phí tăng 4.202 → 5.165đ, ROI giảm 1.38 → 0.94 vì phí giữ chỗ chia cho ít ticket hơn. |
 | 5 | `R-base-after-20261118-155700-ff7de9` | base · after | Sửa `legal.pii_fields_blocked_to_third_party` từ `[name, phone, street, district, city]` thành `[recipient_contact, customer_note]` (đúng khoá trong tin gửi hãng) | 1.0 [1.0; 1.0] | 1.0 | 0 · 0 · 0 | 0.2308 | Tin gửi hãng giữ lại `district` (chính sách cho phép), chặn đúng chữ khách viết và liên hệ người nhận quà; số khác không đổi. |
 
@@ -399,22 +399,22 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 
 | | **v1** (phút 105–115, TRƯỚC khi nhận thẻ sự cố) |
 |---|---|
-| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | |
-| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | |
-| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: ________ · bộ nền với cổng vòng 1 (prepared): ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `7059dbb` (2026-11-18 15:16, trên `main`) |
+| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `e8c93d4a` (2026-11-18 16:41) |
+| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: `R-base-before-20261118-154100-bde05c` · bộ nền với cổng vòng 1 (prepared): `R-base-prepared-20261118-164140-b5bfcd` |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không (`vượt trần: không`). Hàng chờ 0 ca ùn, chờ lâu nhất 0 phút; chi phí 5.165đ < 10.000đ; ROI 0,94 ≥ 0,2; hoàn tự động 155.000đ / trần 2.000.000đ; 0 lỗi oan, 0 lộ dữ liệu |
+| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Nhóm kho `?` (ticket có mã đơn không tồn tại, 5 lần chạy): 10.359đ/ticket > làm tay vì luôn chuyển người, nhưng pass_rate 1.0 và đó là cách xử lý đúng. Trong 2 kho pilot, HCM đắt hơn HN (2.567đ so với 1.993đ) và là nơi `T-002@55` từng hỏng ở mốc base (hãng VNX). Không đổi quyết định: hai kho đều rẻ hơn làm tay và sạch ở mốc prepared |
+| Quyết định (khoanh một) | **Thu hẹp** |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261118-164140-b5bfcd`: cả 5 chỉ số bắt buộc `[ĐẠT ]` (pass_rate 1.0, pass_k 1.0, hoàn sai 0, lỗi oan 0, lộ dữ liệu 0), escalation_rate 0.2308 ≤ 0.3 |
+| Bằng chứng 2 | So với mốc base `R-base-before-20261118-154100-bde05c`: hoàn sai 20.000đ → 0, lỗi oan 1 → 0 nhờ Cổng 1 (chặn `T-002@55`), không có ca nào mới hỏng; Cổng 3 bỏ `customer_note` khỏi tin gửi hãng |
+| Bằng chứng 3 | `R-base-prepared-20261118-164140-b5bfcd` khối kinh doanh và vận hành: độ phủ 0,59 (13/22 ticket/ngày), chi phí 5.165đ/ticket, ROI 0,94, 0 ca ùn với 1 người trực, `vượt trần: không` |
+| Khớp dòng nào trong `decision_rule` đã ký? | Dòng "Tiếp tục" đã ký đòi đạt "trên bộ nền **VÀ** trên gói sự cố"; gói sự cố chưa có trước phút 125, nên chưa đủ căn cứ chọn Tiếp tục. Ba chỉ số an toàn đã đạt, nên áp dòng "Thu hẹp": chỉ chạy phần đã có bằng chứng (2 kho HN, HCM), ghi rõ phần bị cắt |
+| Nếu Thu hẹp: cắt phần nào, vì sao | Cắt kho DN, CT (9/22 ticket/ngày, report: "9 ngoài phạm vi") về làm tay; kho sỉ HCM-B2B chưa có đơn nào trong bộ nền nên cũng để ngoài. Giữ HN + HCM 100% (`business.pilot_scope`), 1 người duyệt `NV-HANH`. Vì: đề chạy thử ở 2 depot; CT có đơn trễ do bão (`O-1006`, `FORCE_MAJEURE`) mà từ 01/12 REFUND-v4 đổi cách xử lý loại này; HN và HCM có bằng chứng sạch ở mốc prepared |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | Không áp dụng |
+| Nếu Dừng: bài học ghi lại | Không áp dụng |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Kết quả trên gói sự cố (phút 125); đơn sau 01/12 theo REFUND-v4; giờ cao điểm thật (bộ nền chia đều 22 ticket/ca, không có lúc dồn) |
+| Ngày quyết định lại (trừ khi Dừng) | Ngay sau gói sự cố (quyết định v2, Phiếu C mục C12); xem lại tiêu chí 2026-11-25 như Phiếu A |
+| PIC ký | Phạm Duy Đức (Sản phẩm và kinh doanh, trưởng nhóm) |
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 

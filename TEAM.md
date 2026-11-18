@@ -32,7 +32,7 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 
 Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi tiêu đề thành họ tên không dấu và MSSV, ví dụ `## NguyenVanAn-20241234`).
 
-## PhamDuyDuc-2A202603634
+## PhamDuyDuc-2A202603611
 
 ### Phần việc phụ trách
 

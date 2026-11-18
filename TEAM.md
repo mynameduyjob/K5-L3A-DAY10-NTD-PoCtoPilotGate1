@@ -79,15 +79,24 @@ Trưởng nhóm · Sản phẩm và kinh doanh. Câu 1.1–1.6 (Phiếu A, A1–
 
 ### Đóng góp cụ thể
 
-...
+*(Trân điền theo lịch sử commit; Đức soát lại và sửa nếu cần.)*
+
+- Tạo repo của bàn, đặt danh tính Git `2A202603611` theo README bước 2b.
+- Câu 1.1–1.6: viết Phiếu A (mục tiêu, thước đo offline và telemetry, đọc khoảng tin cậy, bản tiêu chí "Nếu … thì …", bốn câu soát, ranh giới đầu ra).
+- Điền `config/acceptance_criteria.json`, **ký tiêu chí trước lần đánh giá đầu tiên** và đẩy lên `main`.
+- Câu 2.3 (B3): bản đồ dữ liệu và ví dụ drift REFUND-v4 ngày 01/12/2026.
+- Câu 2.9 (B7.4): cổng `business` (trần hoàn 2.000.000đ/ngày, ngân sách 1.500đ/ticket, phạm vi HN + HCM, ROI tối thiểu 0,2).
+- Quyết định v1 (B8, Thu hẹp) và v2 (C12, Tiếp tục): Trân soạn theo report, Đức xác nhận.
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `e35f49b` (TEAM.md), `7059dbb` (Sign acceptance criteria, 2026-11-18 15:16, đã ký lúc 15:12:30, hash `e0527fc8`), `1152571` (Phiếu A, `business`, B3).
+- Phiếu A mục A1–A5; Phiếu B mục B3, B7.4, B8; Phiếu C mục C12.
+- Lần chạy làm căn cứ quyết định: `R-base-prepared-20261118-164140-b5bfcd` (v1), `R-S7-grade-20261118-195952-5d6948` (v2).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+*(Đức tự viết: một điều học được, một điều còn chưa chắc.)*
 
 ## NguyenTranTuTran-2A202603603
 

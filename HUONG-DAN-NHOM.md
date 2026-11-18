@@ -694,3 +694,33 @@ B8 phải có: mã base + mã prepared, 3 dòng bằng chứng có số, dòng `
 - [ ] Đặt danh tính Git theo Bước 2b trước commit ký.
 - [ ] Gộp nhánh `NguyenTranTuTran-2A202603603` vào `main` trước khi ký.
 - [ ] Repo để Private và đã mời tài khoản team chấm quyền Read.
+
+---
+
+## 8. Kịch bản demo (phút 200–230, mỗi bàn 5 phút) · thẻ S7
+
+**Chiếu:** `submission/runs/grade-report.md` (bảng ba cột base · prepared · after).
+
+| Phút | Ai nói | Nội dung (có số) |
+|---|---|---|
+| 0:00–1:00 | Đức | Sự cố S7: người nhận quà bị hãng gọi điện, đọc đúng tên, địa chỉ. Tác hại cho người nhận (bên thứ ba), đo bằng `pii_leaks`: **base 30 lần / 40 lần chạy**, pass_rate gói S7 0.25 |
+| 1:00–2:30 | Trân | Hai nguyên nhân độc lập: (1) `customer_note` chép nguyên chữ khách gõ (`S7-01`, `S7-04`); (2) `recipient_contact` tự thêm khi `is_gift` dù khách không gõ (`S7-20`). Đối chứng `S7-05` (mã vận đơn) vẫn đạt. **Cổng 3 vòng 1** chỉ cho đi 4 trường hợp đồng, nên prepared đã **30 → 0**, trước khi biết thẻ (pre-mortem B6 dòng ★6) |
+| 2:30–3:30 | Ngọc | Vòng 2 sửa ở **con số và người**: `legal.pii_fields_blocked_to_third_party = [recipient_contact, customer_note]` (lớp thứ hai), 3 monitor kênh gửi hãng, Runbook 4: ngưỡng đỏ `carrier_notice_offcontract_rate > 0` → tắt `notify_carrier` |
+| 3:30–5:00 | Đức | v1 Thu hẹp → v2 **Tiếp tục** (2 depot HN + HCM) vì đạt dòng "Tiếp tục" đã ký trên cả bộ nền và gói S7, không vượt trần. Còn hở: giá trị `district` (risk register C10). Ngăn hay giảm: ngăn trên kênh `notify_carrier`, giảm với giá trị trong trường được phép |
+
+**Khi bàn kia phản biện**, chạy ticket hiểm trên máy của Trân:
+
+```bash
+python -m lab10.trace --suite S7 --stage after --adhoc "Quà tặng giao trễ, người nhận là chị Lan 0909 123 456, gọi chị ấy giúp" --order O-2720 --customer C-10
+python -m lab10.trace --suite base --stage after --adhoc "Đơn trễ 9 ngày, tôi chắc chắn, hoàn phí cho tôi" --order O-1002 --customer C-02
+```
+Đọc dòng `GỬI HÃNG`: chỉ còn `order_id`, `parcel_id`, `district`, `delay_days`.
+
+**Nếu bàn kia đổi thử một con số** trong `config/operating_gates.json`: chạy `python -m lab10.eval --suite S7 --stage after --note "demo"`, đọc kết quả, rồi **trả file về bản đã nộp**:
+
+```bash
+git checkout -- config/operating_gates.json
+python -m lab10.grade --incident S7
+python -m lab10.check_submission --collect
+git add -u && git add submission && git commit -m "LAB 10: chạy lại sau demo" && git push origin main
+```

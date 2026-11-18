@@ -108,7 +108,8 @@ Kỹ sư cổng. Câu 2.1–2.2 (B0–B2), câu 2.6–2.8 (B7.1–B7.3), câu 3.
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Một điều học được:** chặn theo **danh sách được phép** khác hẳn chặn theo **mẫu dò**. Cổng 3 chỉ cho đi 4 trường trong hợp đồng nên đỡ trọn thẻ S7 ngay từ vòng 1 (lộ dữ liệu 30 → 0 ở mốc prepared), kể cả ca `S7-04` chỉ có địa chỉ và ca `S7-20` khách không gõ gì; nếu dò mẫu số điện thoại thì đã lọt `S7-04` và che nhầm mã vận đơn ở `S7-05`. Cũng học được rằng chỉ số `pii_leaks` cũ báo 0 trong khi 55/110 lần chạy bộ nền vẫn gửi chữ khách gõ cho hãng: một con số "sạch" chưa chắc là đã đo đúng chỗ.
+- **Một điều còn chưa chắc:** cổng lọc theo **tên trường** chứ không kiểm **giá trị**; nếu kho nhập cả địa chỉ nhà vào `district` thì vẫn lộ (đã ghi ở risk register C10). Chưa chắc bài kiểm tra ẩn có ca như vậy không, và chưa chắc cổng 2 (ghi lỗi hãng) chạy đúng với đơn nhiều kiện vì bộ nền lẫn gói S7 chưa kích hoạt nó lần nào.
 
 ## PhamThiHongNgoc-2A202603602
 

@@ -28,7 +28,7 @@ Ghi `members` trong `submission/submission.json` theo dạng `"HoVaTen-MSSV"`, k
 | Vận hành và pháp lý | Phạm Thị Hồng Ngọc | 2.4 HAZOP vòng 1 + checklist 9 nhóm có PIC (B4, B5) · 2.10 cổng `operations`, `legal`, runbook 1–3, giờ cao điểm (B7.5, B7.6) · C3, C4 HAZOP thẻ, C10 risk register, C11 runbook 4–5 · lệnh 7 | `config/operating_gates.json` mục `operations`, `legal`; `submission/submission.json` |
 | Cả bàn | Đức · Trân · Ngọc | 2.5 pre-mortem bốn lăng kính (B6) · demo, phản biện | `templates/form-*.md` |
 
-### Ai làm gì (CP1–CP4, theo lịch sử commit)
+### Ai làm gì (CP1–CP5, theo lịch sử commit)
 
 Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi đúng người đã viết/chạy, kèm commit hoặc mã lần chạy.
 
@@ -60,7 +60,12 @@ Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi �
 | CP4 | Câu 3.6 ba chỉ số theo dõi mới | `lab10/monitors.py`, Phiếu C C8 | Trân | Trân | `R-S7-after-20261118-170032-5d6948`, grade `R-S7-grade-20261118-170103-5d6948` (`PASS-VISIBLE`) |
 | CP4 | Câu 3.7 fault tree sau khi sửa | Phiếu C C9 | Trân | Trân | `R-S7-after-20261118-170103-5d6948` |
 | CP4 | Câu 3.7 risk register, checklist, runbook 4–5 | Phiếu C C10, C11 | Ngọc | Trân soạn nháp; **Ngọc đã duyệt** | `05ea3f9` (C10 Risk register, C11 checklist + Runbook 4–5) |
-| CP5 | Quyết định v2 + ba dòng bắt buộc | Phiếu C C12 | Đức | **Chưa làm** (chờ Đức) | — |
+| CP5 | Quyết định v2 (**Tiếp tục**, 2 depot HN + HCM) + ba dòng bắt buộc | Phiếu C C12 | Đức | Trân soạn thay theo report; **Đức cần xác nhận và ký** | grade `R-S7-grade-20261118-170103-5d6948`, `R-S7-grade-20261118-195952-5d6948` (`PASS-VISIBLE`, "Được phép cân nhắc 'Tiếp tục'") |
+| CP5 | Điền `submission.json` (team, members, incident S7, v1 Thu hẹp, v2 Tiếp tục, three_lines chép từ C12) | `submission/submission.json` | Ngọc | Trân điền thay; **Ngọc cần soát** | commit nộp bài |
+| CP5 | Chạy lại lệnh 6 trước khi gom bài | `runs/` | Trân | Trân | `R-S7-grade-20261118-195952-5d6948` |
+| CP5 | Lệnh 7 `check_submission --collect` tới `ĐỦ THÀNH PHẦN` | `submission/` | Ngọc | Trân chạy thay trên máy của Trân (nơi có `runs/journal.jsonl`) | commit nộp bài |
+| CP5 | Demo ba mốc, phản biện | — | Cả bàn | **Chưa làm** (làm tại lớp) | — |
+| CP5 | Nộp link repo trên LMS | LMS | Từng người | **Mỗi người tự nộp** | — |
 
 ## Cá nhân
 

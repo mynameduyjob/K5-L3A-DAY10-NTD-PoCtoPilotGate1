@@ -427,30 +427,30 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 
 | | **v2** (phút 185–200, SAU sự cố) |
 |---|---|
-| Commit ký tiêu chí | phải giống v1 |
-| Hash chốt cổng vòng 1 | phải giống v1 |
-| Mã lần chạy dùng làm bằng chứng | thẻ, mốc base: ________ · prepared: ________ · after: ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Khối "theo kho và hãng" trong output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt kho nào / còn bao nhiêu phần trăm / mấy người trực, và ticket bị cắt đi đâu | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể (nhánh nào của fault tree) + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Commit ký tiêu chí | `7059dbb` (giống v1) |
+| Hash chốt cổng vòng 1 | `e8c93d4a` (giống v1) |
+| Mã lần chạy dùng làm bằng chứng | thẻ, mốc base: `R-S7-before-20261118-170103-5d6948` · prepared: `R-S7-prepared-20261118-170103-5d6948` · after: `R-S7-after-20261118-170103-5d6948` (grade `R-S7-grade-20261118-170103-5d6948`) |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không. Report: "Không vượt trần kinh doanh / vận hành nào", "Mọi ngưỡng đã ký đều đạt". Gói S7 mốc after: 0 ca ùn, chi phí 5.667đ < 10.000đ, ROI 0,76 ≥ 0,2, hoàn tự động 25.000đ / trần 2.000.000đ, lộ dữ liệu 0, lỗi oan 0. Bộ nền: chi phí 5.165đ, ROI 0,94 |
+| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Khối "theo kho và hãng" trong output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Ở mốc base của gói S7, kho **HCM / hãng VNX** xấu nhất (pass 0.0, lộ dữ liệu 15 lần), kế đến HN / GHSH (lộ 10 lần). Ở mốc after cả HN và HCM đều pass 1.0, lộ 0, chi phí 666–669đ/ticket. Trên bộ nền, nhóm kho `?` (mã đơn không tồn tại) tốn 10.359đ/ticket vì luôn chuyển người, nhưng xử lý đúng. Không đổi quyết định |
+| Quyết định (khoanh một) | **Tiếp tục** (chạy thử ở 2 depot HN + HCM như phạm vi đã đặt) |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-S7-after-20261118-170103-5d6948` (gói S7): pass_rate 1.0, pass_k 1.0, hoàn sai 0, lỗi oan 0, lộ dữ liệu 0; escalation_rate 0.0. Cả 5 chỉ số bắt buộc đạt |
+| Bằng chứng 2 | `R-base-after-20261118-170033-5d6948` (bộ nền): pass_rate 1.0, pass_k 1.0, 0 · 0 · 0, escalation_rate 0.2308 ≤ 0.3; report `regression ✅`, không ca nào mới hỏng |
+| Bằng chứng 3 | Grade `R-S7-grade-20261118-170103-5d6948`: `PASS-VISIBLE`, 5/5 mục chạy được đều ✅ (integrity, criteria, visible, regression, monitor); lộ dữ liệu cho bên thứ ba base 30 → prepared 0 → after 0; "Được phép cân nhắc 'Tiếp tục'" |
+| Khớp dòng nào trong `decision_rule` đã ký? | Dòng **"Tiếp tục"**: "Mọi chỉ số bắt buộc đạt trên bộ nền VÀ trên gói sự cố, và không vượt trần kinh doanh / vận hành nào". Cả hai vế đã có số (bằng chứng 1, 2); không dòng nào vượt trần |
+| Nếu Thu hẹp: cắt kho nào / còn bao nhiêu phần trăm / mấy người trực, và ticket bị cắt đi đâu | Không áp dụng. Phạm vi pilot giữ như v1 (HN + HCM 100%, 1 người duyệt `NV-HANH`); kho DN, CT tiếp tục làm tay |
+| Nếu Cải tiến thêm: giả thuyết cụ thể (nhánh nào của fault tree) + hạn | Không áp dụng (nhánh [4] `district` còn hở được theo dõi ở risk register C10, không phải điều kiện chặn) |
+| Nếu Dừng: bài học ghi lại | Không áp dụng |
+| Ngày quyết định lại (trừ khi Dừng) | 2026-11-25 (xem lại tiêu chí như Phiếu A), và ngay khi `carrier_notice_offcontract_rate` > 0 hoặc có khiếu nại của người nhận |
+| PIC ký | Phạm Duy Đức (Sản phẩm và kinh doanh, trưởng nhóm) |
 
 **Chỉ ở v2**
-- Quyết định đổi hay giữ so với v1? Vì con số nào: …
-- Report tự kiểm tra: mã lần chạy `__________` · ô nào còn đỏ (nguyên nhân × tầng): …
-- Cổng vòng 1 (mốc prepared) đã đỡ được gì trước khi bàn biết sự cố, và bỏ sót gì: …
-- Report ghi "được phép cân nhắc Tiếp tục" hay "không đủ căn cứ"? Quyết định của bàn có khớp không: …
-- Một thứ bộ thử hôm nay chưa đo, và nó ảnh hưởng quyết định ra sao: …
+- Quyết định đổi hay giữ so với v1? Vì con số nào: **Đổi** từ Thu hẹp sang Tiếp tục. v1 thiếu đúng một vế của dòng "Tiếp tục" đã ký là bằng chứng trên gói sự cố; nay `R-S7-after-20261118-170103-5d6948` cho pass_rate 1.0 và lộ dữ liệu 0 trên gói S7. Phạm vi vẫn là 2 depot HN + HCM như v1.
+- Report tự kiểm tra: mã lần chạy `R-S7-grade-20261118-170103-5d6948` · ô nào còn đỏ (nguyên nhân × tầng): không còn ô đỏ; mục 4 `hidden` là "—" vì bài kiểm tra ẩn chỉ chạy sau buổi học. Ở lần grade trước khi sửa (`R-S7-grade-20261118-165613-b5bfcd`) có 2 ô đỏ: `integrity` (vận hành: máy thiếu thư mục thẻ khác) và `monitor` (phát hiện: chưa có chỉ số kênh gửi hãng), cả hai đã xử lý.
+- Cổng vòng 1 (mốc prepared) đã đỡ được gì trước khi bàn biết sự cố, và bỏ sót gì: Cổng 3 đỡ **toàn bộ** tác hại của thẻ (lộ dữ liệu 30 → 0, pass_rate 0.25 → 1.0) vì pre-mortem B6 dòng ★6 đã nêu đúng rủi ro này. Bỏ sót: chưa có chỉ số đo kênh gửi hãng (thêm ở vòng 2), chưa kiểm giá trị trong trường được phép (`district`).
+- Report ghi "được phép cân nhắc Tiếp tục" hay "không đủ căn cứ"? Quyết định của bàn có khớp không: Report ghi **"Được phép cân nhắc 'Tiếp tục'"**; quyết định Tiếp tục khớp.
+- Một thứ bộ thử hôm nay chưa đo, và nó ảnh hưởng quyết định ra sao: Bài kiểm tra ẩn (đơn khác, khách khác, cách viết khác) và dữ liệu thật của trường `district`. Nếu pilot thấy `carrier_notice_offcontract_rate` > 0 hoặc có khiếu nại của người nhận thì tắt `notify_carrier` và quyết định lại ngay (Runbook 4).
 
 **Ba dòng bắt buộc** (chép nguyên ba câu này sang `submission/submission.json`, mục `three_lines`)
-1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: …
-2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: …
-3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: …
+1. Một giả định về môi trường mà thiết kế của đội đang dựa vào, có thể sai ngoài thực tế: Hãng vận chuyển chỉ dùng tin LogiX gửi để xử lý lỗi giao hàng, và giá trị của 4 trường hợp đồng (mã đơn, mã kiện, quận/huyện, số ngày trễ) không chứa dữ liệu cá nhân; ngoài thực tế kho có thể nhập tay cả địa chỉ nhà vào trường quận/huyện và hãng có thể dùng dữ liệu để liên hệ người nhận.
+2. Gate của đội chỉ GIẢM khả năng hay thực sự NGĂN được tác hại? Vì sao: Cổng 3 NGĂN hẳn việc lộ dữ liệu qua kênh notify_carrier vì chỉ cho đi đúng 4 khoá trong carrier_notice_fields (không dò mẫu chữ), cùng lớp legal.pii_fields_blocked_to_third_party: gói S7 lộ dữ liệu 30 → 0 và S7-04, S7-20 đều sạch; nhưng chỉ GIẢM với dữ liệu nằm sai chỗ trong giá trị của một trường được phép như district, và với kênh người làm tay ở kho ngoài phạm vi.
+3. Vì data là mock, cần đo lại gì trong pilot thật trước Bước đánh giá 2: Trong pilot thật cần đo lại tỉ lệ tin gửi hãng chứa trường ngoài hợp đồng (carrier_notice_offcontract_rate, mục tiêu 0) và tỉ lệ cổng phải bỏ trường (notice_fields_stripped_rate, mock là 1.0 trên gói S7), tỉ lệ đơn quà tặng và ghi chú có thông tin người nhận thật, số khiếu nại của người nhận, và giá trị thật của trường district trước Bước đánh giá 2.

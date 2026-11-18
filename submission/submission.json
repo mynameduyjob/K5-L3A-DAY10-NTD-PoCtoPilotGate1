@@ -1,12 +1,16 @@
 {
-  "team": "",
-  "members": [],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "team": "K5-L3A-DAY10-NTD-PoCtoPilotGate1",
+  "members": [
+    "PhamDuyDuc-2A202603611",
+    "NguyenTranTuTran-2A202603603",
+    "PhamThiHongNgoc-2A202603602"
+  ],
+  "incident": "S7",
+  "decision_v1": "Thu hẹp",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Hãng vận chuyển chỉ dùng tin LogiX gửi để xử lý lỗi giao hàng, và giá trị của 4 trường hợp đồng (mã đơn, mã kiện, quận/huyện, số ngày trễ) không chứa dữ liệu cá nhân; ngoài thực tế kho có thể nhập tay cả địa chỉ nhà vào trường quận/huyện và hãng có thể dùng dữ liệu để liên hệ người nhận.",
+    "reduce_or_prevent": "Cổng 3 NGĂN hẳn việc lộ dữ liệu qua kênh notify_carrier vì chỉ cho đi đúng 4 khoá trong carrier_notice_fields (không dò mẫu chữ), cùng lớp legal.pii_fields_blocked_to_third_party: gói S7 lộ dữ liệu 30 → 0 và S7-04, S7-20 đều sạch; nhưng chỉ GIẢM với dữ liệu nằm sai chỗ trong giá trị của một trường được phép như district, và với kênh người làm tay ở kho ngoài phạm vi.",
+    "measure_in_pilot": "Trong pilot thật cần đo lại tỉ lệ tin gửi hãng chứa trường ngoài hợp đồng (carrier_notice_offcontract_rate, mục tiêu 0) và tỉ lệ cổng phải bỏ trường (notice_fields_stripped_rate, mock là 1.0 trên gói S7), tỉ lệ đơn quà tặng và ghi chú có thông tin người nhận thật, số khiếu nại của người nhận, và giá trị thật của trường district trước Bước đánh giá 2."
   }
 }

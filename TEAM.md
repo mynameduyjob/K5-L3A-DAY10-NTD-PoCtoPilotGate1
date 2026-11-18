@@ -53,13 +53,13 @@ Cột "Theo phân công" lấy từ bảng trên. Cột "Thực tế làm" ghi �
 | CP4 | Nhận thẻ S7 (repo thẻ, đối chiếu hash MANIFEST), ghi `Thẻ đã bốc: S7` | `incidents/`, Phiếu C dòng đầu, `TEAM.md` | Đức | Trân | `07f5971`, `8b247c8` |
 | CP4 | Câu 3.0 `grade --incident S7` trước khi sửa | Phiếu C C0 dòng 1, C1 | Trân | Trân | `R-S7-grade-20261118-165613-b5bfcd` |
 | CP4 | Câu 3.1 trace ≥ 2 kiểu lỗi, bảng soát lỗi | Phiếu C C2 | Trân | Trân | `S7-01@11`, `S7-20@11`, `S7-04@11`, `S7-05@11` |
-| CP4 | Câu 3.1 phần riêng thẻ S7 (C3.3 hiệu chỉnh lòng tin), HAZOP của thẻ | Phiếu C C3.3, C4 | Ngọc | Trân soạn nháp; **Ngọc cần duyệt** | commit vòng 2 |
+| CP4 | Câu 3.1 phần riêng thẻ S7 (C3.3 hiệu chỉnh lòng tin), HAZOP của thẻ | Phiếu C C3.3, C4 | Ngọc | Trân soạn nháp; **Ngọc đã duyệt** | `05ea3f9` (đối chiếu C3.3, C4 với thẻ S7) |
 | CP4 | Câu 3.2, 3.3 specification, giả định môi trường | Phiếu C C5 | Trân | Trân | commit vòng 2 |
 | CP4 | Câu 3.4 fault tree trước khi sửa | Phiếu C C6 | Trân | Trân | `R-S7-before-20261118-165613-b5bfcd` |
 | CP4 | Câu 3.5 sửa: Cổng 3 ghi sự kiện `notice_fields_stripped`; bảng sửa | `lab10/guards.py`, Phiếu C C7 | Trân | Trân | `R-S7-after-20261118-165913-4cd37f` |
 | CP4 | Câu 3.6 ba chỉ số theo dõi mới | `lab10/monitors.py`, Phiếu C C8 | Trân | Trân | `R-S7-after-20261118-170032-5d6948`, grade `R-S7-grade-20261118-170103-5d6948` (`PASS-VISIBLE`) |
 | CP4 | Câu 3.7 fault tree sau khi sửa | Phiếu C C9 | Trân | Trân | `R-S7-after-20261118-170103-5d6948` |
-| CP4 | Câu 3.7 risk register, checklist, runbook 4–5 | Phiếu C C10, C11 | Ngọc | Trân soạn nháp; **Ngọc cần duyệt** | commit vòng 2 |
+| CP4 | Câu 3.7 risk register, checklist, runbook 4–5 | Phiếu C C10, C11 | Ngọc | Trân soạn nháp; **Ngọc đã duyệt** | `05ea3f9` (C10 Risk register, C11 checklist + Runbook 4–5) |
 | CP5 | Quyết định v2 + ba dòng bắt buộc | Phiếu C C12 | Đức | **Chưa làm** (chờ Đức) | — |
 
 ## Cá nhân
@@ -114,16 +114,20 @@ Một điều học được, một điều còn chưa chắc.
 
 ### Phần việc phụ trách
 
-Vận hành và pháp lý. Câu 2.4 (B4, B5), câu 2.10 (B7.5, B7.6), C3, C4, C10, C11. File: `config/operating_gates.json` mục `operations`, `legal`; `submission/submission.json`. Chạy lệnh 7.
+Vận hành và pháp lý. Câu 2.4 (B4, B5), câu 2.10 (B7.5, B7.6), C3.3, C4, C10, C11. File: `config/operating_gates.json` mục `operations`, `legal`; `submission/submission.json`.
 
 ### Đóng góp cụ thể
 
-...
+- Vòng 1: điền cổng `operations` (`pic: NV-TUNG`, `approver_id: NV-HANH`, `reviewers_on_shift: 1`, `review_capacity_per_hour: 6`, `max_queue_wait_minutes: 60`, `stop_conditions`, `alert_channel`) và `legal` (`pii_fields_blocked_to_third_party`, `carrier_fault_requires_recorded_cause: true`) trong `config/operating_gates.json`.
+- Viết Phiếu B: B4 (HAZOP vòng 1 trên `file_carrier_fault` + 3 dòng ngoài kỹ thuật), B5 (Checklist 9 nhóm việc kèm PIC có tên), B7.5 (Runbook phần 1–3), B7.6 (Giờ cao điểm); sửa các điểm review CP3 (khớp khóa PII `["recipient_contact", "customer_note"]`, tên trường thật trong `data/world.json`, giả định giờ cao điểm từ `ops_facts`).
+- Vòng 2 (thẻ S7): rà soát và duyệt các mục C3.3 (Hiệu chỉnh lòng tin), C4 (HAZOP của thẻ trên `notify_carrier`), C10 (Risk register), C11 (cập nhật checklist + Runbook 4–5).
 
 ### Bằng chứng
 
-Mã commit, mã lần chạy (`runs/<mã>`), dòng trong phiếu.
+- Commit: `2ecd269`, `d61411c` (vòng 1 + sửa review CP3); `05ea3f9` (duyệt C3.3, C4, C10, C11).
+- File & phiếu: `config/operating_gates.json` (mục `operations`, `legal`), Phiếu B (B4, B5, B7.5, B7.6), Phiếu C (C3.3, C4, C10, C11).
 
 ### Exit ticket
 
-Một điều học được, một điều còn chưa chắc.
+- **Điều học được:** Một cổng pháp lý/vận hành chỉ thực sự **bảo đảm** an toàn khi vừa khớp đúng tên trường ở tầng dữ liệu thực tế (whitelist `carrier_notice_fields` và khóa cấp đầu `recipient_contact`, `customer_note`) vừa có runbook quy định rõ người bấm dừng, ngưỡng đỏ và cách xử lý với bên thứ ba.
+- **Điều còn chưa chắc:** Với các trường được phép gửi như `district`, nếu kho nhập tay lẫn địa chỉ chi tiết vào ô quận/huyện thì bộ lọc theo tên khóa hiện tại chưa chặn được; cần kiểm chứng thêm bằng bước kiểm tra danh mục quận/huyện và theo dõi số liệu thật trong pilot trước Bước đánh giá 2.
